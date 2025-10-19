@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 function Pnf() {
   return (
     <>
-      <div className='flex flex-col justify-center items-center w-full h-screen p-1'>
+      <div className='flex flex-col justify-center items-center w-full min-h-screen p-1'>
         <img src="/pnf.gif" alt=""  style={{height:'400px'}} />
         <p className='my-3'>Oh No !</p>
         <h1 className='md:text-4xl text-2xl font-bold'>Look Like You're Lost</h1>
