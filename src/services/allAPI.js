@@ -30,8 +30,18 @@ export const getHomeBookApi = async()=>{
 }
 
 // view all books
+
+
+ export const getAllBooksApi = async(reqHeader)=>{
+  return await  commonApi("GET",`${SERVERURL}/all-books`,[],reqHeader)
+}
+
 // view single book
 
 
+
+export const getSingleBookApi=async(bookId,reqHeader)=>{
+  return await commonApi("GET",`${SERVERURL}/books/${bookId}/view`,{},reqHeader)
+}
 
 // profile Update

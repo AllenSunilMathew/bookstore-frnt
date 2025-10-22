@@ -18,3 +18,12 @@ const commonApi = async(httpRequest , url , reqBody , reqHeader)=>{
 
 }
 export default commonApi
+
+
+
+
+
+
+
+
+
