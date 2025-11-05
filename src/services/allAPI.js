@@ -32,8 +32,8 @@ export const getHomeBookApi = async()=>{
 // view all books
 
 
- export const getAllBooksApi = async(reqHeader)=>{
-  return await  commonApi("GET",`${SERVERURL}/all-books`,[],reqHeader)
+ export const getAllBooksApi = async(search,reqHeader)=>{
+  return await  commonApi("GET",`${SERVERURL}/all-books?search=${search}`,{},reqHeader)
 }
 
 // view single book
@@ -44,4 +44,70 @@ export const getSingleBookApi=async(bookId,reqHeader)=>{
   return await commonApi("GET",`${SERVERURL}/books/${bookId}/view`,{},reqHeader)
 }
 
-// profile Update
+
+
+
+
+// all user upload books
+export const getUserUploadBooksAPI=async(reqHeader)=>{
+  return await commonApi("GET",`${SERVERURL}/user-books`,{},reqHeader)
+}
+
+//ALL PURSHSAED BOOK
+
+export const getAllUserBoughtBooksAPI =async(reqHeader)=>{
+  return await commonApi("GET",`${SERVERURL}/user-bought-books`,{},reqHeader)
+}
+
+//remove user upload books
+
+export const removeUserUploadBooksAPI=async(reqHeader)=>{
+  return await commonApi("DELETE",`${SERVERURL}/user-books/${bookId}/remove`,{},reqHeader)
+}
+// profile Update  
+export const updateUserProfileApi = async(reqBody,reqHeader)=>{
+  return await  commonApi("PUT",`${SERVERURL}/user-profile/edit`,reqBody,reqHeader)
+}
+
+
+
+//list user
+export const listAllUserApi = async(reqHeader)=>{
+  return await  commonApi("GET",`${SERVERURL}/all-user`,{},reqHeader)
+}
+
+//list books
+
+export const getAllBooksAdminApi = async(reqHeader)=>{
+  return await  commonApi("GET",`${SERVERURL}'/admin-all-books`,{},reqHeader)
+}
+//approve books
+export const updateBookStatusApi = async(reqBody,reqHeader)=>{
+  return await  commonApi("PUT",`${SERVERURL}'/admin/books/approve`,{},reqHeader,reqBody)
+}
+
+
+//update admin-called from admin setting when yupdate is clicked
+export const updateAdminProfileApi = async(reqBody,reqHeader)=>{
+  return await  commonApi("PUT",`${SERVERURL}'/admin-profile/edit`,{},reqHeader,reqBody)
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//make payment
+
+export const makePaymentAPi = async(reqBody,reqHeader)=>{
+  return await  commonApi("PUT",`${SERVERURL}'/make-payment`,{},reqHeader,reqBody)
+}

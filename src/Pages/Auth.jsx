@@ -68,7 +68,7 @@ function Auth({ register }) {
           sessionStorage.setItem("users", JSON.stringify(result.data.user))
           sessionStorage.setItem("token", result.data.token)
           setTimeout(() => {
-            if (result.data.user.role == 'admin') {
+            if (result.data.user.role == 'Admin') {
               navigate('/admin-dashbord')
             }
             else {

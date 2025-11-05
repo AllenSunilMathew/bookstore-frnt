@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import Header from '../Components/Header'
 import Footer from '../../Component/Footer'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -6,15 +6,20 @@ import { faBars } from '@fortawesome/free-solid-svg-icons'
 import { Link } from 'react-router-dom'
 import { ToastContainer, toast } from 'react-toastify'
 import { getAllBooksApi } from '../../services/allAPI'
+import { searchBookContext } from '../../../contextAPI/ContextShare'
 
 function AllBooks() {
 
   const [listStatus, setListStatus] = useState(false)
   const [token, setToken] = useState("")
   const [books, setBooks] = useState([])
+  const[allCategory,setAllCategory]=useState([])
   const [tempBooks, setTempBooks] = useState([])
+  const {searchKey, setSearchKey} = useContext(searchBookContext)
 
-  console.log(books)
+  console.log(allCategory)
+  console.log(searchKey);
+  
 
   useEffect(() => {
     if (sessionStorage.getItem("token")) {
@@ -22,20 +27,29 @@ function AllBooks() {
       setToken(userToken)
       getAllBooks(userToken)
     }
-  }, [])
+  }, [searchKey])
 
   const getAllBooks = async (userToken) => {
     const reqHeader = {
       "Authorization": `Bearer ${userToken}`
     }
     try {
-      const result = await getAllBooksApi(reqHeader)
+      const result = await getAllBooksApi(searchKey,reqHeader)
       if (result.status === 200) {
         setBooks(result.data)
         setTempBooks(result.data)
+        const tempCategory = result.data.map(item => item.category)
+        console.log(tempCategory);
+        
+        const tempArray = [...new Set(tempCategory)]
+        setAllCategory(tempArray)
+
+
+
+
       } else {
         console.log(result)
-        toast.warning(result.response?.data || "Something went wrong")
+        toast.warning(result.response?.data)
       }
     } catch (err) {
       console.log(err)
@@ -61,11 +75,11 @@ function AllBooks() {
             <h1 className="text-3xl">Collections</h1>
             <div className="flex my-5">
               <input
-                type="text"
+                type="text" value={searchKey}
                 className="p-2 rounded border border-gray-400 md:w-100 text-black placeholder-gray-700"
-                placeholder="Search by Title"
+                placeholder="Search by Title" onChange={(e)=>setSearchKey(e.target.value)}
               />
-              <button className="bg-blue-400 ms-2 rounded w-15 md:w-20">Search</button>
+              <button className="bg-blue-400 ms-2 rounded w-15 md:w-20" >Search</button>
             </div>
           </div>
 
@@ -105,8 +119,8 @@ function AllBooks() {
                   <label className="ms-3" htmlFor="horror">Horror</label>
                 </div>
                 <div className="mt-3">
-                  <input type="radio" id="autoBio" name="filter" onClick={() => filterBooks("Auto Biography")} />
-                  <label className="ms-3" htmlFor="autoBio">Auto Biography</label>
+                  <input type="radio" id="bio" name="filter" onClick={() => filterBooks("bio")} />
+                  <label className="ms-3" htmlFor="bio">Auto Biography</label>
                 </div>
                 <div className="mt-3">
                   <input type="radio" id="selfhelp" name="filter" onClick={() => filterBooks("Self Help")} />
@@ -123,13 +137,13 @@ function AllBooks() {
               </div>
             </div>
 
-            {/* 📚 GRID SECTION — kept exactly as you wrote it */}
+            {/* {book} */}
             <div className='col-span-3'>
               <div className='md:grid grid-cols-4 mt-5 md:mt-0'>
                 {
                   books.length > 0 ?
                     books?.map(book => (
-                      <div key={book?._id} className='shadow p-3 rounded mx-2'>
+                      <div key={book?._id} className='shadow p-3 rounded mx-2 'hidden={book?.status=='pending'|| book?.status =='sold'}>
                         <img width={'100%'} style={{ height: '300px' }} src={book?.imageUrl} alt="" />
                         <div className='flex justify-center flex-col items-center'>
                           <p className='text-blue-400 text-lg'>{book?.author}</p>

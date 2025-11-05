@@ -14,6 +14,7 @@ import CareerAdmin from './Admin/pages/CareerAdmin'
 import ResourceAdmin from './Admin/pages/ResourceAdmin'
 import SettingAdmin from './Admin/pages/SettingAdmin'
 import Pnf from './Pages/Pnf'
+import Edit from './Users/Components/Edit'
 
 function App() {
 
@@ -36,6 +37,18 @@ function App() {
         <Route path={'/contact'} element={<Contact />} />
         <Route path={'/profile'} element={<Profile />} />
         <Route path={'/books/:id/view'} element={<ViewBook />} />
+{
+
+}
+
+
+
+
+
+
+
+
+
 
         <Route path={'/admin-dashbord'} element={<AdminDashbord />} />
         <Route path={'/admin-career'} element={<CareerAdmin />} />

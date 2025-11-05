@@ -3,27 +3,61 @@ import Header from '../Components/Header'
 import Footer from '../../Component/Footer'
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { getHomeBookApi } from '../../services/allAPI'
+import { ToastContainer, toast } from 'react-toastify'
+import { searchBookContext } from '../../../contextAPI/ContextShare'
+import { useContext } from 'react'
+
+
+
+
+
 function Home() {
-  const [homeBooks , setHomeBooks] = useState([])
-  useEffect(()=>{
-     getHomeBooks()
-  },[])
-  console.log(homeBooks);
-  
-  const getHomeBooks = async()=>{
-    try {
-      const result = await getHomeBookApi()
-      if(result.status==200){
-             setHomeBooks(result.data)
-      }
-     
-    } catch (error) {
-      console.log(error);
-      
+  const [homeBooks, setHomeBooks] = useState([])
+  const navigate = useNavigate()
+  const {searchKey, setSearchKey}= useContext(searchBookContext)
+  useEffect(() => {
+    getHomeBooks()
+  }, [searchKey])
+  // console.log(homeBooks);
+
+
+  const searchBook = () => {
+    if (!searchKey) {
+      toast.warning("Please fill the Form Completely")
+    } else if (!sessionStorage.getItem("token")) {
+      toast.warning("Please Login to search")
+      setTimeout(() => {
+        navigate("/login")
+      }, 1500);
+    } else if (sessionStorage.getItem("token") && searchKey) {
+      navigate("/all-books")
+    } else {
+      toast.error("Something Went Wrong")
     }
   }
+
+
+
+
+
+  const getHomeBooks = async () => {
+    try {
+      const result = await getHomeBookApi()
+      if (result.status == 200) {
+        setHomeBooks(result.data)
+      }
+
+    } catch (error) {
+      console.log(error);
+
+    }
+  }
+
+  //
+
+
   return (
     <>
       <Header />
@@ -36,8 +70,11 @@ function Home() {
           <p>   Give your family and friends a book   </p>
 
           <div className='mt-9 w-75  md:w-100 py-2 rounded-3xl ps-3 flex flex-cols px-3 justify-center items-center   bg-white'>
-            <input type="text" placeholder='search Books' className='w-100 border-none outline-0  text-black me-2' />
-            <button>  <FontAwesomeIcon className='text-black' icon={faMagnifyingGlass} /></button>
+
+            <input onChange={e => setSearchKey(e.target.value)} type="text" placeholder='search Books' className='w-100 border-none outline-0  text-black me-2' />
+
+            <button>  <FontAwesomeIcon className='text-black' icon={faMagnifyingGlass} onClick={searchBook} /></button>
+
           </div>
         </div>
       </div>
@@ -50,21 +87,21 @@ function Home() {
         <h1 className='text-3xl'>Explore Our Latest Collections</h1>
 
         <div className="md:grid grid-cols-4 w-full mt-5">
-          { homeBooks?.length>0 ?
-            homeBooks?.map((books,index)=>(<div className="p-3">
-            <div key={index} className="shadow p-3 rounded mx-2 min-h-[500px]">
-              <img width={'100%'} style={{ height: '300px' }} src={books?.imageUrl} alt="book" />
-              <div className="flex justify-center flex-col items-center ">
-                <p className="text-blue-700 font-bold text-lg">{books?.author}</p>
-                <p className='my-2 text-center'>{books?.title}</p>
-                <p className='my-2 text-red-400'>{books.price}</p>
+          {homeBooks?.length > 0 ?
+            homeBooks?.map((books, index) => (<div className="p-3">
+              <div key={index} className="shadow p-3 rounded mx-2 min-h-[500px]">
+                <img width={'100%'} style={{ height: '300px' }} src={books?.imageUrl} alt="book" />
+                <div className="flex justify-center flex-col items-center ">
+                  <p className="text-blue-700 font-bold text-lg">{books?.author}</p>
+                  <p className='my-2 text-center'>{books?.title}</p>
+                  <p className='my-2 text-red-400'>{books.price}</p>
 
+                </div>
               </div>
-            </div>
-          </div>))
+            </div>))
             :
             <p>Loading .........</p>
-            }
+          }
         </div>
         <div className="text-center my-5">
           <Link to={'/all-books'} className='bg-blue-600 p-3' >Explore More...</Link>
@@ -77,14 +114,14 @@ function Home() {
           <h1 className='text-lg font-bold'>FEATURED AUTHORS</h1>
           <h2 className='text-xl'>CAPITIVATE WITH EVERY WORD</h2>
           <p className='text-justify font-bold mt-3'>   Authors in a bookstore application are the visionaries behind the books that fill the shelves, each contributing their own unique voice, creativity, and perspective to the world of literature. Whether writing fiction, non-fiction, poetry, or educational works, authors bring stories, ideas, and knowledge to life in ways that resonate with readers of all backgrounds.
-       </p>
+          </p>
           <p className='text-justify mt-10 font-bold'>
-                        Their work spans a wide array of genres, from thrilling mysteries and heartwarming romances to thought-provoking memoirs and insightful self-help books. Through their words, authors not only entertain and inform but also inspire and challenge readers to think deeply, reflect, and grow. In a bookstore application, authors' works become accessible to readers everywhere, offering a diverse and rich tapestry of voices and experiences, all of which contribute to the evolving landscape of modern literature.
-                        </p>
+            Their work spans a wide array of genres, from thrilling mysteries and heartwarming romances to thought-provoking memoirs and insightful self-help books. Through their words, authors not only entertain and inform but also inspire and challenge readers to think deeply, reflect, and grow. In a bookstore application, authors' works become accessible to readers everywhere, offering a diverse and rich tapestry of voices and experiences, all of which contribute to the evolving landscape of modern literature.
+          </p>
         </div>
 
         <div className='md:p-10 py-2'>
-          <img src="/author.png" alt="author" className='w-full h-full md:mt-0 mt-4'  />
+          <img src="/author.png" alt="author" className='w-full h-full md:mt-0 mt-4' />
         </div>
       </section>
 
@@ -103,6 +140,12 @@ function Home() {
       </section>
 
       <Footer />
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        pauseOnHover
+        theme="colored"
+      />
     </>
   )
 }
